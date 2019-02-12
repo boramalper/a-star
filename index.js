@@ -38,19 +38,23 @@ document.body.onmousedown = function(evt) {
         return;
    
     ++mouseDown;
+
+    var canvasXY = client2canvas(evt.clientX, evt.clientY);
+    var canvasX = canvasXY[0];
+    var canvasY = canvasXY[1];
     
     // LINE_WIDTH / 2 + x * (LENGTH + LINE_WIDTH),
-    if (LINE_WIDTH / 2 + (startLoc.x + 1) * (LENGTH + LINE_WIDTH) >= evt.clientX
-        && evt.clientX >= LINE_WIDTH / 2 + startLoc.x * (LENGTH + LINE_WIDTH)
-        && LINE_WIDTH / 2 + (startLoc.y + 1) * (LENGTH + LINE_WIDTH) >= evt.clientY
-        && evt.clientY >= LINE_WIDTH / 2 + startLoc.y * (LENGTH + LINE_WIDTH)
+    if (LINE_WIDTH / 2 + (startLoc.x + 1) * (LENGTH + LINE_WIDTH) >= canvasX
+        && canvasX >= LINE_WIDTH / 2 + startLoc.x * (LENGTH + LINE_WIDTH)
+        && LINE_WIDTH / 2 + (startLoc.y + 1) * (LENGTH + LINE_WIDTH) >= canvasY
+        && canvasY >= LINE_WIDTH / 2 + startLoc.y * (LENGTH + LINE_WIDTH)
     ) {
         startSelected = true;
     }
-    else if (LINE_WIDTH / 2 + (goalLoc.x + 1) * (LENGTH + LINE_WIDTH) >= evt.clientX
-             && evt.clientX >= LINE_WIDTH / 2 + goalLoc.x * (LENGTH + LINE_WIDTH)
-             && LINE_WIDTH / 2 + (goalLoc.y + 1) * (LENGTH + LINE_WIDTH) >= evt.clientY
-             && evt.clientY >= LINE_WIDTH / 2 + goalLoc.y * (LENGTH + LINE_WIDTH)
+    else if (LINE_WIDTH / 2 + (goalLoc.x + 1) * (LENGTH + LINE_WIDTH) >= canvasX
+             && canvasX >= LINE_WIDTH / 2 + goalLoc.x * (LENGTH + LINE_WIDTH)
+             && LINE_WIDTH / 2 + (goalLoc.y + 1) * (LENGTH + LINE_WIDTH) >= canvasY
+             && canvasY >= LINE_WIDTH / 2 + goalLoc.y * (LENGTH + LINE_WIDTH)
     ) {
         goalSelected = true;
     }
@@ -389,14 +393,23 @@ function clearTiles() {
 }
 
 
-// BUG: mislocates! a bit downwards
 function locateTile(clientX, clientY) {
-    var rect = canvas.getBoundingClientRect();
-    var canvasX = clientX - rect.left;
-    var canvasY = clientY - rect.top;
+    var canvasXY = client2canvas(clientX, clientY);
+    var canvasX = canvasXY[0];
+    var canvasY = canvasXY[1];
 
     return {x: Math.trunc((canvasX - LINE_WIDTH / 2) / (LENGTH + LINE_WIDTH)),
             y: Math.trunc((canvasY - LINE_WIDTH / 2) / (LENGTH + LINE_WIDTH))};
+}
+
+
+// Converts mouse event's client coordinates to canvas coordinates!
+function client2canvas(clientX, clientY) {
+    var rect = canvas.getBoundingClientRect();
+    var canvasX = (clientX - rect.left) / rect.width * canvas.width;
+    var canvasY = (clientY - rect.top) / rect.height * canvas.height;
+
+    return [canvasX, canvasY];
 }
 
 
