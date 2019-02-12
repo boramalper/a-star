@@ -100,6 +100,11 @@ function start_onClick() {
     stepBtn.disabled = false;
     finishBtn.disabled = false;
     resetBtn.disabled = true;
+
+    for (let x of document.querySelectorAll('div#controller input[type="radio"]'))
+        x.disabled = true;
+
+    canvas.style.cursor = "not-allowed";
     
     started = true;
     aStar_initialize();
@@ -112,7 +117,12 @@ function stop_onClick() {
     stepBtn.disabled = true;
     finishBtn.disabled = true;
     resetBtn.disabled = false;
-    
+
+    for (let x of document.querySelectorAll('div#controller input[type="radio"]'))
+        x.disabled = false;
+
+    canvas.style.cursor = "auto";
+
     var iterationsSpan = document.getElementById("iterations");
     var costSpan = document.getElementById("cost");
     
